@@ -1,0 +1,21 @@
+fastapi                  # Creates backend API endpoints.
+uvicorn[standard]         # Runs the FastAPI server locally.
+python-dotenv             # Loads secret keys and config from .env.
+pydantic                  # Validates API request and response data.
+
+langchain                 # Connects RAG components like prompts, retrievers, and LLMs.
+langchain-community       # Provides extra LangChain loaders and utilities.
+langchain-core            # Provides LangChain base classes and core abstractions.
+langchain-groq            # Connects LangChain to Groq LLM.
+langchain-qdrant          # Connects LangChain to Qdrant vector database.
+langchain-openai          # Uses OpenAI embeddings for Qdrant indexing and search.
+langchain-huggingface     # Supports Hugging Face embeddings and reranking models.
+
+qdrant-client             # Connects directly to Qdrant Cloud or local Qdrant.
+fastembed                 # Supports sparse embeddings/BM25-style hybrid search.
+sentence-transformers     # Supports dense embeddings and cross-encoder reranking.
+docling                   # Parses PDFs with document structure awareness.
+pypdf                     # Fallback PDF parser when Docling or model downloads fail.
+
+pandas                    # Handles tabular data and quick data inspection.
+sqlalchemy                # Connects to SQLite database for SQL RAG.
