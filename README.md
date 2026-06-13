@@ -1,27 +1,27 @@
 # MediBot: Role-Aware Advanced RAG Assistant
 
-MediBot is a full-stack, role-aware RAG assistant built for the fictional MediAssist Health Network. It combines a FastAPI backend, Next.js frontend, Qdrant Cloud vector search, OpenAI embeddings, Groq LLM response generation, Docling-based PDF parsing, and SQLite SQL RAG.
+MediBot is a full-stack, role-aware RAG assistant built for the fictional MediAssist Health Network. The project combines a FastAPI backend, Next.js frontend, Qdrant Cloud vector search, OpenAI embeddings, Groq LLM response generation, Docling-based PDF parsing, and SQLite SQL RAG.
 
-The main goal of MediBot is to demonstrate secure retrieval-augmented generation where users only receive information allowed for their role. Doctors, nurses, billing executives, technicians, and admins can ask questions through the frontend, and the backend applies role-based access control before retrieving document chunks or SQL/database information.
+The main goal of MediBot is to demonstrate secure retrieval-augmented generation where users only receive information allowed for their role. Doctors, nurses, billing executives, technicians, and admins can ask questions through the frontend, and the backend applies role-based access control before retrieving document chunks or SQL data.
 
 ---
 
 ## Key Features
 
-* Role-based demo users
-* FastAPI backend API
-* Next.js frontend UI
-* Qdrant Cloud vector database
-* OpenAI `text-embedding-3-small` embeddings
-* Groq LLM answer generation
-* Docling PDF parsing with HybridChunker
-* `pypdf` fallback parsing for PDFs
-* SQLite SQL RAG for billing and database-style questions
-* Retrieval-time RBAC filtering using Qdrant metadata filters
-* SQL access restricted to `billing_executive` and `admin`
-* Frontend display of answer, role, retrieval type, sources, and SQL query when allowed
-* Qdrant payload index creation for metadata filtering
-* Demo test cases for allowed and blocked access
+- Role-based demo users
+- FastAPI backend API
+- Next.js frontend UI
+- Qdrant Cloud vector database
+- OpenAI `text-embedding-3-small` embeddings
+- Groq LLM answer generation
+- Docling PDF parsing with HybridChunker
+- `pypdf` fallback parsing for PDFs
+- SQLite SQL RAG for billing and database-style questions
+- Retrieval-time RBAC filtering using Qdrant metadata filters
+- SQL access restricted to `billing_executive` and `admin`
+- Frontend display of answer, role, retrieval type, sources, and SQL query when allowed
+- Qdrant payload index creation for metadata filtering
+- Demo test cases for allowed and blocked access
 
 ---
 
@@ -29,24 +29,24 @@ The main goal of MediBot is to demonstrate secure retrieval-augmented generation
 
 ### Backend
 
-* Python
-* FastAPI
-* LangChain
-* Qdrant Cloud
-* OpenAI embeddings
-* Groq
-* Docling
-* pypdf
-* SQLite
-* Uvicorn
+- Python
+- FastAPI
+- LangChain
+- Qdrant Cloud
+- OpenAI embeddings
+- Groq
+- Docling
+- pypdf
+- SQLite
+- Uvicorn
 
 ### Frontend
 
-* Next.js
-* React
-* JavaScript
-* Tailwind CSS
-* Fetch API
+- Next.js
+- React
+- JavaScript
+- Tailwind CSS
+- Fetch API
 
 ---
 
@@ -93,13 +93,13 @@ medibot-project/
 
 MediBot restricts both document retrieval and SQL access based on the selected user role.
 
-| Role                | Allowed Document Collections                             |
-| ------------------- | -------------------------------------------------------- |
-| `doctor`            | `general`, `clinical`, `nursing`                         |
-| `nurse`             | `general`, `nursing`                                     |
-| `billing_executive` | `general`, `billing`                                     |
-| `technician`        | `general`, `equipment`                                   |
-| `admin`             | `general`, `clinical`, `nursing`, `billing`, `equipment` |
+| Role | Allowed Document Collections |
+| --- | --- |
+| `doctor` | `general`, `clinical`, `nursing` |
+| `nurse` | `general`, `nursing` |
+| `billing_executive` | `general`, `billing` |
+| `technician` | `general`, `equipment` |
+| `admin` | `general`, `clinical`, `nursing`, `billing`, `equipment` |
 
 SQL RAG is only allowed for:
 
@@ -161,43 +161,6 @@ metadata.collection
 ```
 
 Because of this, Qdrant payload indexes must be created after ingestion.
-
----
-
-## Architecture Diagram
-
-```mermaid
-flowchart TD
-    A[Demo User] --> B[Next.js Frontend<br/>Role Selection + Chat UI]
-
-    B --> C[FastAPI Backend<br/>/login /chat /collections]
-
-    C --> D[RBAC Layer<br/>Role-Based Access Control]
-
-    D --> E{Question Type}
-
-    E -->|Document / Policy / Clinical Question| F[Qdrant Vector RAG]
-    E -->|Billing / Database Question| G[SQL RAG Router]
-
-    F --> H[Qdrant Cloud Vector DB<br/>OpenAI text-embedding-3-small]
-    H --> I[Indexed Document Chunks<br/>general / clinical / nursing / billing / equipment]
-
-    G --> J{Role Allowed for SQL?}
-    J -->|billing_executive / admin| K[SQLite Database<br/>mediassist.db]
-    J -->|doctor / nurse / technician| L[SQL Access Blocked]
-
-    F --> M[Groq LLM<br/>Answer Generation]
-    K --> M
-    L --> M
-
-    M --> N[API Response<br/>Answer + Sources + Retrieval Type + SQL if allowed]
-    N --> B
-
-    O[Docling + pypdf Parser] --> P[Document Ingestion]
-    P --> H
-
-    Q[create_qdrant_indexes.py] --> H
-```
 
 ---
 
@@ -414,13 +377,13 @@ http://localhost:3000
 
 ## Demo Users
 
-| Username       | Password     | Role                |
-| -------------- | ------------ | ------------------- |
-| `dr.mehta`     | `doctor`     | `doctor`            |
-| `nurse.priya`  | `nurse`      | `nurse`             |
-| `billing.ravi` | `billing`    | `billing_executive` |
-| `tech.anand`   | `technician` | `technician`        |
-| `admin.sys`    | `admin`      | `admin`             |
+| Username | Password | Role |
+| --- | --- | --- |
+| `dr.mehta` | `doctor` | `doctor` |
+| `nurse.priya` | `nurse` | `nurse` |
+| `billing.ravi` | `billing` | `billing_executive` |
+| `tech.anand` | `technician` | `technician` |
+| `admin.sys` | `admin` | `admin` |
 
 These users are for local demo purposes only.
 
@@ -514,6 +477,39 @@ Frontend displays answer, retrieval type, sources, and SQL if allowed
 
 ---
 
+## Architecture Diagram
+
+```text
+                 ┌────────────────────┐
+                 │   Next.js Frontend  │
+                 │ Role + Chat UI      │
+                 └─────────┬──────────┘
+                           │
+                           ▼
+                 ┌────────────────────┐
+                 │   FastAPI Backend   │
+                 │ /health /login      │
+                 │ /chat /collections  │
+                 └─────────┬──────────┘
+                           │
+          ┌────────────────┴────────────────┐
+          │                                 │
+          ▼                                 ▼
+┌────────────────────┐           ┌────────────────────┐
+│ Qdrant Vector RAG  │           │ SQLite SQL RAG      │
+│ RBAC metadata      │           │ billing/admin only  │
+│ filtering          │           │ safe SELECT queries │
+└─────────┬──────────┘           └─────────┬──────────┘
+          │                                │
+          ▼                                ▼
+┌────────────────────┐           ┌────────────────────┐
+│ Indexed Documents  │           │ mediassist.db       │
+│ Docling chunks     │           │ Billing data        │
+└────────────────────┘           └────────────────────┘
+```
+
+---
+
 ## Demo Test Cases
 
 ### 1. Qdrant RAG Test
@@ -532,9 +528,9 @@ What is the leave policy?
 
 Expected result:
 
-* Retrieval type: `qdrant_rag`
-* Sources include `leave_policy.pdf`
-* Sources are only from collections allowed for nurse, such as `general` and `nursing`
+- Retrieval type: `qdrant_rag`
+- Sources include `leave_policy.pdf`
+- Sources are only from collections allowed for nurse, such as `general` and `nursing`
 
 ---
 
@@ -554,9 +550,9 @@ What medicines are listed in the drug formulary?
 
 Expected result:
 
-* Retrieval type: `qdrant_rag`
-* Sources include `drug_formulary.pdf`
-* Sources come from the `clinical` collection
+- Retrieval type: `qdrant_rag`
+- Sources include `drug_formulary.pdf`
+- Sources come from the `clinical` collection
 
 ---
 
@@ -576,10 +572,10 @@ Show me the total claim amount by status
 
 Expected result:
 
-* Retrieval type: `sql_rag`
-* Source includes `mediassist.db`
-* SQL query is shown in the frontend
-* Claim totals are displayed
+- Retrieval type: `sql_rag`
+- Source includes `mediassist.db`
+- SQL query is shown in the frontend
+- Claim totals are displayed
 
 ---
 
@@ -599,10 +595,10 @@ Show me the total claim amount by status
 
 Expected result:
 
-* SQL data is not exposed
-* No claim totals are shown
-* `mediassist.db` is not returned as a source
-* The response indicates that database information is not accessible for the role
+- SQL data is not exposed
+- No claim totals are shown
+- `mediassist.db` is not returned as a source
+- The response indicates that database information is not accessible for the role
 
 ---
 
@@ -709,13 +705,13 @@ npm.cmd run dev
 
 ## Security Notes
 
-* Do not commit `.env` or `.env.local` files.
-* Do not commit real API keys.
-* Do not commit `node_modules`, `.next`, `venv`, or `__pycache__`.
-* SQL RAG only allows safe `SELECT`-style access.
-* SQL RAG is restricted to `billing_executive` and `admin`.
-* Qdrant retrieval uses role-based metadata filters.
-* Demo credentials are not production authentication.
+- Do not commit `.env` or `.env.local` files.
+- Do not commit real API keys.
+- Do not commit `node_modules`, `.next`, `venv`, or `__pycache__`.
+- SQL RAG only allows safe `SELECT`-style access.
+- SQL RAG is restricted to `billing_executive` and `admin`.
+- Qdrant retrieval uses role-based metadata filters.
+- Demo credentials are not production authentication.
 
 Recommended `.gitignore` entries:
 
@@ -744,29 +740,29 @@ Only commit demo data if it contains no real or sensitive information.
 
 Completed:
 
-* Backend API
-* Frontend UI
-* Role-based demo users
-* RBAC collection filtering
-* Qdrant document retrieval
-* Qdrant payload index creation
-* SQL RAG
-* SQL role restriction
-* Source display
-* Retrieval type display
-* SQL display when allowed
-* Demo test cases
-* Screenshots
+- Backend API
+- Frontend UI
+- Role-based demo users
+- RBAC collection filtering
+- Qdrant document retrieval
+- Qdrant payload index creation
+- SQL RAG
+- SQL role restriction
+- Source display
+- Retrieval type display
+- SQL display when allowed
+- Demo test cases
+- Screenshots
 
 Future improvements:
 
-* Add production authentication
-* Add deployed frontend/backend URLs
-* Move frontend API URL fully to environment configuration
-* Add full hybrid dense + sparse Qdrant retrieval
-* Add cross-encoder reranking
-* Add automated tests for RBAC and SQL blocking
-* Add Docker setup
+- Add production authentication
+- Add deployed frontend/backend URLs
+- Move frontend API URL fully to environment configuration
+- Add full hybrid dense + sparse Qdrant retrieval
+- Add cross-encoder reranking
+- Add automated tests for RBAC and SQL blocking
+- Add Docker setup
 
 ---
 
