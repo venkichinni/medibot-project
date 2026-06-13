@@ -166,86 +166,36 @@ Because of this, Qdrant payload indexes must be created after ingestion.
 
 ## Architecture Diagram
 
-```text
-                          +----------------------+
-                          |      Demo User       |
-                          | doctor / nurse /     |
-                          | billing / tech /     |
-                          | admin                |
-                          +----------+-----------+
-                                     |
-                                     v
-                          +----------------------+
-                          |   Next.js Frontend   |
-                          | Role Selection UI    |
-                          | Chat Interface       |
-                          +----------+-----------+
-                                     |
-                                     v
-                          +----------------------+
-                          |   FastAPI Backend    |
-                          | /login /chat         |
-                          | /collections         |
-                          +----------+-----------+
-                                     |
-                                     v
-                          +----------------------+
-                          |      RBAC Layer      |
-                          | Role-based access    |
-                          | control filtering    |
-                          +----------+-----------+
-                                     |
-                    +----------------+----------------+
-                    |                                 |
-                    v                                 v
-      +----------------------------+    +----------------------------+
-      | Document / Policy Query    |    | Billing / Database Query  |
-      +-------------+--------------+    +-------------+--------------+
-                    |                                 |
-                    v                                 v
-      +----------------------------+    +----------------------------+
-      |      Qdrant RAG            |    |        SQL RAG             |
-      | Qdrant Cloud Vector DB     |    | SQLite (mediassist.db)     |
-      | OpenAI Embeddings          |    | Only billing/admin roles   |
-      | Role-filtered retrieval    |    | can access SQL results     |
-      +-------------+--------------+    +-------------+--------------+
-                    |                                 |
-                    +----------------+----------------+
-                                     |
-                                     v
-                          +----------------------+
-                          |   Groq LLM Answer    |
-                          | Response Generation  |
-                          +----------+-----------+
-                                     |
-                                     v
-                          +----------------------+
-                          | Frontend Response UI |
-                          | Answer               |
-                          | Sources              |
-                          | Retrieval Type       |
-                          | SQL if allowed       |
-                          +----------------------+
+```mermaid
+flowchart TD
+    A[Demo User] --> B[Next.js Frontend<br/>Role Selection + Chat UI]
+    B --> C[FastAPI Backend<br/>/login /chat /collections]
+    C --> D[RBAC Layer<br/>Role-Based Access Control]
+    D --> E{Question Type}
 
-Document Ingestion Flow
------------------------
-PDF / Markdown Files
-        |
-        v
-Docling / pypdf Parsing
-        |
-        v
-Chunking + Metadata
-        |
-        v
-OpenAI Embeddings
-        |
-        v
-Qdrant Collection: medibot_docs
-        |
-        v
-create_qdrant_indexes.py
-```
+    E -->|Document / Policy / Clinical Question| F[Qdrant Vector RAG]
+    E -->|Billing / Database Question| G[SQL RAG Router]
+
+    F --> H[Qdrant Cloud Vector DB<br/>OpenAI text-embedding-3-small]
+    H --> I[Indexed Document Chunks<br/>general / clinical / nursing / billing / equipment]
+
+    G --> J{Role Allowed for SQL?}
+    J -->|billing_executive / admin| K[SQLite Database<br/>mediassist.db]
+    J -->|doctor / nurse / technician| L[SQL Access Blocked]
+
+    F --> M[Groq LLM<br/>Answer Generation]
+    K --> M
+    L --> M
+
+    M --> N[API Response<br/>Answer + Sources + Retrieval Type + SQL if allowed]
+    N --> B
+
+    O[Docling / pypdf Parser] --> P[Document Ingestion]
+    P --> Q[Chunking + Metadata]
+    Q --> R[OpenAI Embeddings<br/>text-embedding-3-small]
+    R --> H
+
+    S[create_qdrant_indexes.py] --> H
 
 > **Important:** After running `python run_ingestion.py`, run `python create_qdrant_indexes.py` before starting the backend. This creates the required Qdrant payload indexes for filters such as `metadata.collection`.
 
