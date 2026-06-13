@@ -166,6 +166,7 @@ Because of this, Qdrant payload indexes must be created after ingestion.
 
 ## Architecture Diagram
 
+```mermaid
 flowchart TD
     A[Demo User] --> B[Next.js Frontend<br/>Role Selection + Chat UI]
     B --> C[FastAPI Backend<br/>/login /chat /collections]
@@ -195,6 +196,7 @@ flowchart TD
     R --> H
 
     S[create_qdrant_indexes.py] --> H
+```
 
 > **Important:** After running `python run_ingestion.py`, run `python create_qdrant_indexes.py` before starting the backend. This creates the required Qdrant payload indexes for filters such as `metadata.collection`.
 
