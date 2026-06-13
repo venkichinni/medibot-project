@@ -166,7 +166,6 @@ Because of this, Qdrant payload indexes must be created after ingestion.
 
 ## Architecture Diagram
 
-```mermaid
 flowchart TD
     A[Demo User] --> B[Next.js Frontend<br/>Role Selection + Chat UI]
     B --> C[FastAPI Backend<br/>/login /chat /collections]
