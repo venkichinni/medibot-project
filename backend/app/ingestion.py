@@ -218,7 +218,7 @@ def index_documents_to_qdrant():
     print(f"\nTotal documents/chunks to index: {len(docs)}")
 
     dense_embeddings = OpenAIEmbeddings(
-    model="text-embedding-ada-002"
+    model="text-embedding-3-small"
     )
 
     QdrantVectorStore.from_documents(
@@ -228,6 +228,8 @@ def index_documents_to_qdrant():
         api_key=QDRANT_API_KEY,
         collection_name=QDRANT_COLLECTION,
         force_recreate=True,
+        batch_size=16,
+        timeout=120,
     )
 
     print(f"Indexed {len(docs)} chunks into Qdrant collection: {QDRANT_COLLECTION}")
