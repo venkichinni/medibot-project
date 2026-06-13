@@ -13,7 +13,7 @@ The main goal of MediBot is to demonstrate secure retrieval-augmented generation
 * Next.js frontend interface
 * Qdrant Cloud vector retrieval
 * OpenAI `text-embedding-3-small` embeddings
-* Groq LLM-based answer generation
+* Groq LLM answer generation
 * Docling PDF parsing with HybridChunker
 * `pypdf` fallback parsing for PDFs
 * SQLite SQL RAG for billing and database-style questions
@@ -805,3 +805,4 @@ Future improvements:
 * Implemented retrieval-time RBAC so each role only accesses permitted document collections.
 * Added SQL RAG support for billing/database queries with access restricted to `billing_executive` and `admin`.
 * Displayed answers, source documents, retrieval type, and SQL queries in the frontend.
+
